@@ -3,9 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Web 01 Test</title>
+    <style>
+        .rojo{
+            color: red;
+        }
+    </style>
 </head>
 <body>
-    
+
+    <h1 class="rojo">Selectores JQuery</h1>
+    <h2>Esto es una prueba</h2>
+    <button id="boton1">Soy un botón 1</button>
+    <button id="boton2" class="rojo">Soy un botón 2</button>
+
+    <P class="rojo">Párrafo 1</P>    
+    <P>Párrafo 2</P>
+    <P>Párrafo 3</P>
+
+    <!-- SIEMPRE DEBE SER LA PRIMERA LINEA DEL SCRIPT PARA UTILIZAR JQUERY Y SIEMPRE AL FINAL DEL BODY-->
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        //AQUÍ NUESTRO CÓDIGO JQUERY   
+        //LA PRIMERA LINEA SIEMPRE DEBE SER LA SIGUIENTE
+        $(document).ready(function(){
+            //AQUÍ DENTRO LAS PETICIONES  
+            //alert('Hola mundo');
+            //$("h2").hide();
+            //$("#boton1").hide();
+
+            //PODEMOS ASOCIAR ACCIONES A LOS OBJETOS (CUANDO)
+
+            $("p").click(function(){
+                //IMPRESCINDIBLE EN DESARROLLO FRONT
+                //MENSAJES POR CONSOLA
+                console.log("Mensaje por consola web")
+                $("#boton1").hide();
+                //EXISTE UNA PALABRA CLAVE QUE INDICA QUE ACCEDEMOS AL OBJETO QUE HA REALIZADO LA LLAMADA: this
+                $(this).hide(); //En este caso al pulsar sobre el párrafo éste desaparece
+
+            })
+
+            $(".rojo").click(function(){
+                alert("HAS PULSADO EN ROJO")
+            })
+
+        })
+    </script>
 </body>
 </html>
