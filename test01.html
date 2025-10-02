@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de tareas</title>
+    <link rel="stylesheet" href="css/jquery-ui.min.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+      }
+
+      #miLista {
+        list-style: none;
+        padding: 0;
+        width: 250px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+
+      #miLista li {
+        margin: 5px;
+        padding: 10px;
+        background: #3498db;
+        color: white;
+        border-radius: 4px;
+        cursor: move;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Lista de tareas</h1>
+    <label for="">Añade una tarea: </label>
+    <input type="text" id="tarea">
+    <button id="botontarea">Añadir tarea</button>
+    <ul id="miLista">
+    </ul>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#miLista").sortable()
+        $("#miLista").disableSelection()
+        $("#botontarea").click(function(){
+            var nuevatarea = $("<li>"+$("#tarea").val()+"</li>");
+            $("#miLista").append(nuevatarea)
+        })
+      });
+    </script>
+  </body>
+</html>
