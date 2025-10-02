@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web 03 Sumas</title>
+</head>
+<body>
+    <h1>Sumar números</h1>
+    <label>Número 1:</label>
+    <input type="number" id="cajanumero1">
+    <label>Número 2</label>
+    <input type="number" id="cajanumero2">
+    <button id="botonsumar">Sumar números</button>
+    <h1 id="resultado"></h1>
+    <br>
+    <label>Tabla del: </label>
+    <input type="number" id="cajanumerotabla">
+    <button id="botontabla">Mostrar Tabla</button>
+    <p id="tablaoutput"></p>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#botonsumar").click(function(){
+                var num1 = parseInt($("#cajanumero1").val());
+                var num2 = parseInt($("#cajanumero2").val());
+                var resultado = num1+num2;
+                $("#resultado").text("La suma es: " + resultado)
+            })
+            $("#botontabla").click(function(){
+                var numerotabla = parseInt($("#cajanumerotabla").val())
+                var tablaoutput = "";
+                console.log("hh")
+                for (let i = 0; i <= 10; i++) {
+                    var result = numerotabla*i;
+                    var texto = numerotabla + " * " + i;
+                    tablaoutput += "<tr>";
+                    tablaoutput += "<td>" + texto + "</td>";
+                    tablaoutput += "<td>" + result + "</td>";
+                    tablaoutput += "</tr>";
+                }
+                $("#tablaoutput").html(tablaoutput)
+            })
+
+        })
+    </script>
+</body>
+</html>
