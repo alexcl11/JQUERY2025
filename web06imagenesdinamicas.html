@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web 06 Imagenes Dinámicas</title>
+    <style>
+      img {
+        width: 150px;
+        height: 150px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Imagenes Dinámicas</h1>
+    <label>Número de imagenes</label>
+    <input type="range" id="numeroimagenes" max="20" min="1" value="1" />
+    <button id="botongenerarimagenes">Generar imágenes</button>
+    <hr />
+    <div id="contenedor"></div>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+      $(document).ready(function(){
+          $("#numeroimagenes").change(function(){
+                var numimagenes = parseInt($("#numeroimagenes").val());
+                $("#contenedor").html("");
+                for (let i = 1; i < numimagenes; i++) {
+                    var imagen = $("<img>").attr("src", "images/julianalvarez.webp")
+                    $("#contenedor").append(imagen)
+                    imagen.mouseover(function(){
+                        $(this).attr('src', 'images/fernandotorres.jpg');
+                    })
+                    imagen.mouseout(function(){
+                        $(this).attr('src', 'images/julianalvarez.webp');
+                    })
+                }
+          })
+          
+      })
+    </script>
+  </body>
+</html>

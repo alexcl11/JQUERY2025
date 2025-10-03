@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web 07 Sumar Botones</title>
+</head>
+<body>
+    <h1>Sumar botones</h1>
+    <div id="contenedor"></div>
+    <h1 id="sumabotones">Suma: 0</h1>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        $(document).ready(function(){
+            for (let i = 0; i < 10; i++) {
+                var numeroboton = parseInt(Math.random()*100)
+                var boton = $("<button>").text("Número "+numeroboton) 
+                $("#contenedor").append(boton)                
+            }
+            $("button").click(function(){
+                    var numero = parseInt($(this).text().split(" ")[1])
+                    var suma = parseInt($("#sumabotones").text().split(" ")[1])+numero
+                    $("#sumabotones").text("Suma: "+suma)
+                })
+        })
+        //FUNCION .val() PUEDE GUARAR INFORMACIÓN, se podría haber guardado el número aleatorio como boton.val(numeroboton),
+        // y así evitamos el primer split
+    </script>
+</body>
+</html>

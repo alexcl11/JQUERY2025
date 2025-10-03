@@ -41,7 +41,6 @@
     <script>
       $(document).ready(function () {
         $("#miLista").sortable()
-        $("#miLista").disableSelection()
         $("#botontarea").click(function(){
             var nuevatarea = $("<li>"+$("#tarea").val()+"</li>");
             $("#miLista").append(nuevatarea)
