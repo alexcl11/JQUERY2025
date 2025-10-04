@@ -1,68 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Web 12 Filtros XML</title>
-</head>
-<body>
+    <link rel="stylesheet" href="css/web12filtrosxml.css">
+
+  </head>
+  <body>
     <h1>Filtros en XML</h1>
-    <hr>
+    <hr />
     <label>Introduzca ID: </label>
-    <input type="text" id="cajaid">
+    <input type="text" id="cajaid" />
     <button id="botonatributo">Buscar atributo ID</button>
-    <hr>
+    <button id="botontodosatributos">Leer todos</button>
+    <ul id="listadepartamentosid"></ul>
+    <hr />
     <label>Introduzca LOCALIDAD: </label>
-    <input type="text" id="cajalocalidad">
+    <input type="text" id="cajalocalidad" />
     <button id="botonlocalidad">Buscar localidad</button>
-    <hr>
-    <h1 id="outputid"></h1>
-    <ul id="listadepartamentos"></ul>
-
+    <button id="botontodaslocalidades">Leer todos</button>
+    <ul id="listadepartamentoslocalidad"></ul>
+    <hr />
     <script src="js/jquery-3.7.1.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
     <script>
-        $(document).ready(function(){
-            $("#botonatributo").click(function(){
-                var numerodepartamento = parseInt($("#cajaid").val())
-                $.get("documents/departamentos.xml", function(data){
-                    var nododept = $(data).find("DEPT[DEPT_NO="+numerodepartamento+"]").first()
-                    var id = $(nododept).attr("DEPT_NO")
-                    var nombre = $(nododept).find("DNOMBRE") .text()
-                    var localidad = $(nododept).find("LOC") .text()
-                    $("#outputid").text("ID: "+id+" || Nombre: "+nombre+" || Localidad: "+localidad)                    
+      $(document).ready(function () {
+        //HACER DRAG AND DROP
+        $("#listadepartamentoslocalidad").sortable()
+        $("#listadepartamentosid").sortable()
+
+        //BUSCAR POR ID DE DEPARTAMENTO
+        $("#botonatributo").click(function () {
+          var numerodepartamento = parseInt($("#cajaid").val());
+          $.get("documents/departamentos.xml", function (data) {
+            $("#listadepartamentosid").html("")
+            var nododept = $(data)
+              .find("DEPT[DEPT_NO=" + numerodepartamento + "]")
+              .first();
+            var id = $(nododept).attr("DEPT_NO");
+            var nombre = $(nododept).find("DNOMBRE").text();
+            var localidad = $(nododept).find("LOC").text();
+            var html = "";
+            if(id !== undefined){
+                html += "<li>ID: " +
+                    id +
+                    " || Nombre: " +
+                    nombre +
+                    " || Localidad: " +
+                    localidad + "</li>"
+                
+            } else {
+                html += "<li>No se han encontrado departamentos con ese ID</li>"
+            }
+            $("#listadepartamentosid").html(html);
+          });
+        });
+
+        //BUSCAR POR NOMBRE DE LOCALIDAD
+        $("#botonlocalidad").click(function () {
+          $("#listadepartamentoslocalidad").html("");
+          var html = "";
+          var localidad = $("#cajalocalidad").val().toUpperCase();
+          if (localidad == "") {
+            $("#listadepartamentoslocalidad").html("<li>No se han encontrado localidades con ese nombre</li>");
+          } else {
+            $.get("documents/departamentos.xml", function (data) {
+              //FORMA DEL PROFE
+              var filtro = "LOC:contains(" + localidad + ")";
+              $(data)
+                .find(filtro)
+                .each(function () {
+                  var id = $(this).parent().attr("DEPT_NO");
+                  var nombre = $(this).parent().find("DNOMBRE").text();
+                  html +=
+                    "<li>ID: " +
+                    id +
+                    " || Nombre: " +
+                    nombre +
+                    " || Localidad: " +
+                    localidad;
+                  $("#listadepartamentoslocalidad").html(html);
+                });
+
+              //MI FORMA
+              // $(data).find("DEPT").each(function(){
+              //     var localidadxml = $(this).find("LOC").text()
+              //     if(localidad == localidadxml){
+              //         var id = $(this).attr("DEPT_NO")
+              //         var nombre = $(this).find("DNOMBRE").text()
+              //         var lilocalidad = $("<li>", {"text":"ID: "+id+" || Nombre: "+nombre+" || Localidad: " +localidad})
+              //         $("#listadepartamentoslocalidad").append(lilocalidad)
+              //     }
+              // })
+            });
+            if ($("#listadepartamentoslocalidad li").length < 1) {
+              $("#listadepartamentoslocalidad").html(
+                "<li>No se han encontrado localidades con ese nombre</li>"
+              );
+            }
+          }
+        });
+
+        //LEER TODOS LOS DEPARTAMENOS
+        $("#botontodosatributos").click(function(){
+            $("#listadepartamentosid").html("")
+            $.get("documents/departamentos.xml", function(data){
+                var html=""
+                $(data).find("DEPT").each(function(){
+                    var id = $(this).attr("DEPT_NO");
+                    var nombre = $(this).find("DNOMBRE").text()
+                    var localidad = $(this).find("LOC").text()
+                    html +=
+                        "<li>ID: " +
+                        id +
+                        " || Nombre: " +
+                        nombre +
+                        " || Localidad: " +
+                        localidad;
+                    $("#listadepartamentosid").html(html)
                 })
             })
-            $("#botonlocalidad").click(function(){
-                $("#listadepartamentos").html("")
-                var localidad = $("#cajalocalidad").val()
-                $.get("documents/departamentos.xml", function(data){
-                    //FORMA DEL PROFE
-                    var filtro = "LOC:contains("+localidad+")"
-                    $(data).find(filtro).each(function(){
-                        var id = $(this).parent().attr("DEPT_NO")
-                        var nombre = $(this).parent().find("DNOMBRE").text()
-                        var lilocalidad = $("<li>", {"text":"ID: "+id+" || Nombre: "+nombre+" || Localidad: " +localidad})
-                        $("#listadepartamentos").append(lilocalidad)                       
-                    })
-
-
-                    //MI FORMA
-                    // $(data).find("DEPT").each(function(){
-                    //     var localidadxml = $(this).find("LOC").text()
-                    //     if(localidad == localidadxml){
-                    //         var id = $(this).attr("DEPT_NO")
-                    //         var nombre = $(this).find("DNOMBRE").text()
-                    //         var lilocalidad = $("<li>", {"text":"ID: "+id+" || Nombre: "+nombre+" || Localidad: " +localidad})
-                    //         $("#listadepartamentos").append(lilocalidad)
-                    //     }
-                    // })
-                })
-                console.log($("#listadepartamentos").children().length == 0)
-                if($("#listadepartamentos").has("<li>")){
-                    $("#listadepartamentos").html("<li>No se han encontrado localidades con ese nombre</li>") 
-                }
-            })
+            
         })
+
+
+        $("#botontodaslocalidades").click(function(){
+            $("#listadepartamentoslocalidad").html("")
+            $.get("documents/departamentos.xml", function(data){
+                var html=""
+                $(data).find("DEPT").each(function(){
+                    var id = $(this).attr("DEPT_NO");
+                    var nombre = $(this).find("DNOMBRE").text()
+                    var localidad = $(this).find("LOC").text()
+                    html +=
+                        "<li>ID: " +
+                        id +
+                        " || Nombre: " +
+                        nombre +
+                        " || Localidad: " +
+                        localidad;
+                    $("#listadepartamentoslocalidad").html(html)
+                })
+            })
+            
+        })
+
+      });
     </script>
-</body>
+  </body>
 </html>
