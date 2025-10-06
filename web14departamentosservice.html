@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web 14 Departamentos Service</title>
+</head>
+<body>
+    <h1>Departamentos Service</h1>
+    <hr>
+    <button id="botoncargar">Cargar</button>
+    <table id="tabladepartamentos">
+        <thead>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Localidad</th>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#botoncargar").click(function(){
+                $.get("https://apicruddepartamentosxml.azurewebsites.net/api/departamentos", function(data){
+                    var html = "";
+                    $(data).find("Departamento").each(function(){
+                        var id = $(this).find("IdDepartamento").first().text();
+                        var nombre = $(this).find("Nombre").first().text();
+                        var localidad = $(this).find("Localidad").first().text();
+                        html += "<tr><td>"+id+"</td><td>"+nombre+"</td><td>"+localidad+"</td></tr>";
+                    })
+                    $("#tabladepartamentos tbody").html(html)
+                })
+            })
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web 15 Coches Service</title>
+    <style>
+        img{
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Coches XML Select</h1>
+    <hr>
+    <select id="cochesselect"></select>
+    <hr>
+    <table id="tablacoches">
+        <thead>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Imagen</th>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        $(document).ready(function(){
+            var url = "https://apiclientesxml.azurewebsites.net";
+            var request = "/api/Clientes/GetCochesXML";
+            $.get(url + request, function(data){
+                var html = "";
+                $(data).find("coche").each(function(){
+                    var id = $(this).attr("idcoche");
+                    var marca = $(this).find("marca").text();
+                    var modelo = $(this).find("modelo").text();
+                    html += "<option value='"+id+"'>"+marca+" - "+modelo+"</option>"
+                })
+                $("#cochesselect").html(html)
+            })
+
+            $("#cochesselect").change(function(){
+                var idselect = parseInt($(this).val());
+                $.get(url + request, function(data){
+                    var filtro = "coche[idcoche="+idselect+"]";
+                    var html = "";
+                    var nodo = $(data).find(filtro)
+                    var marca = nodo.find("marca").text();
+                    var modelo = nodo.find("modelo").text();
+                    var srcimg = nodo.find("imagen").text();
+                    html += "<tr><td>"+marca+"</td><td>"+modelo+"</td><td><img src='"+srcimg+"'></td></tr>"
+                    $("#tablacoches tbody").html(html)
+                    
+                })
+            })
+           
+        })
+    </script>
+</body>
+</html>
