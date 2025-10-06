@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web 16 Servicio Clientes</title>
+  </head>
+  <body>
+    <h1>Servicio Clientes</h1>
+    <hr />
+    <select id="selectclientes"></select>
+    <hr />
+    <table id="tablaclientes">
+      <thead>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Dirección</th>
+        <th>Email</th>
+        <th>Código Postal</th>
+        <th>Página Web</th>
+        <th>Imagen cliente</th>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+      $(document).ready(function () {
+        var url = "https://apiclientesxml.azurewebsites.net";
+        var request = "/api/Clientes/GetClientesXML";
+        $.get(url + request, function (data) {
+          var html = "";
+          $(data)
+            .find("CLIENTE")
+            .each(function () {
+              var id = $(this).attr("IDCLIENTE");
+              var nombre = $(this).find("NOMBRE").text();
+              html +=
+                "<option value='" +
+                id +
+                "'>" +
+                id +
+                " - " +
+                nombre +
+                "</option>";
+            });
+          $("#selectclientes").html(html);
+        });
+        $("#selectclientes").change(function () {
+          var id = parseInt($(this).val());
+          var html = "";
+          $.get(url + request, function (data) {
+            var filtro = "CLIENTE[IDCLIENTE=" + id + "]";
+            var nodo = $(data).find(filtro);
+            var nombre = nodo.find("NOMBRE").text();
+            var direccion = nodo.find("DIRECCION").text();
+            var email = nodo.find("EMAIL").text();
+            var codigopostal = nodo.find("CODIGOPOSTAL").text();
+            var paginaweb = nodo.find("PAGINAWEB").text();
+            var srcimagen = nodo.find("IMAGENCLIENTE").text();
+            html +=
+              "<tr><td>" +
+              id +
+              "</td><td>" +
+              nombre +
+              "</td><td>" +
+              direccion +
+              "</td><td>" +
+              email +
+              "</td><td>" +
+              codigopostal +
+              "</td><td>" +
+              paginaweb +
+              "</td><td><img src='" +
+              srcimagen +
+              "' style = 'width:100px ; height: 100px'></td></tr>";
+            $("#tablaclientes tbody").html(html);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

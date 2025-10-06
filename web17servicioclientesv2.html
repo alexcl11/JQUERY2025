@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web 17 Clientes Service</title>
+  </head>
+  <body>
+    <h1>Clientes XML Service</h1>
+    <hr />
+    <div id="contenedorbotones"></div>
+    <hr />
+    <div id="contenedorresultado"></div>
+
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+      $(document).ready(function () {
+        var url = "https://apiclientesxml.azurewebsites.net";
+        var requestbotones = "/api/Clientes";
+        $.get(url + requestbotones, function (data) {
+          $(data)
+            .find("Cliente")
+            .each(function () {
+              var nombre = $(this).find("Nombre").text();
+              var idcliente = $(this).find("IdCliente").text();
+              var botonnombre = $("<button>", {
+                "text": nombre,
+                "value": idcliente
+              });
+              botonnombre.click(function () {
+                var id = $(this).val();
+                $("#contenedorresultado").html("")
+                var request = "/api/clientes/" + id;
+                $.get(url + request, function (data) {
+                  var nombre = $(data).find("Nombre").text();
+                  var email = $(data).find("Email").text();
+                  var srcimagen = $(data).find("Imagen").text();
+                  var titulo = $("<h1>", { text: nombre, style: "color:red" });
+                  var emailHTML = $("<p>", { text: email });
+                  var imagen = $("<img>", {
+                    src: srcimagen,
+                    style: "width:200px",
+                  });
+                  $("#contenedorresultado").append(titulo);
+                  $("#contenedorresultado").append(email);
+                  $("#contenedorresultado").append(imagen);
+                });
+              });
+              $("#contenedorbotones").append(botonnombre);
+            });
+        });
+      });
+    </script>
+  </body>
+</html>
