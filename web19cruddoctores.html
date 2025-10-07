@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web 19 CRUD Doctores</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6fa;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-top: 30px;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #3498db;
+            margin: 20px 0;
+        }
+        label {
+            margin-right: 8px;
+            color: #34495e;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            padding: 6px 10px;
+            margin: 8px 8px 8px 0;
+            border: 1px solid #bfc9d1;
+            border-radius: 4px;
+            background: #fff;
+            font-size: 15px;
+        }
+        button {
+            padding: 8px 18px;
+            margin: 8px 6px 8px 0;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #217dbb;
+        }
+        table {
+            width: 90%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+        }
+        th, td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e1e7ed;
+            text-align: left;
+        }
+        th {
+            background: #3498db;
+            color: #fff;
+            font-weight: bold;
+        }
+        tr:hover {
+            background: #f0f6fb;
+        }
+    </style>
+</head>
+<body>
+    <h1>CRUD Doctores XML</h1>
+    <hr>
+    <label>Insertar ID Doctor: </label>
+    <input type="text" id="cajaiddoctor">
+    <label>Insertar Apellido: </label>
+    <input type="text" id="cajaapellido">
+    <label>Insertar Especialidad: </label>
+    <input type="text" id="cajaespecialidad">
+    <label>Insertar ID Hospital: </label>
+    <input type="text" id="cajaidhospital">
+    <label>Insertar Salario: </label>
+    <input type="text" id="cajasalario">
+    <button id="insertbutton">Insertar</button>
+    <button id="updatebutton">Modificar</button>
+    <button id="deletebutton">Eliminar</button>
+    <hr>
+    <table id="tabladoctores">
+        <thead>
+            <tr>
+                <th>ID Doctor</th>
+                <th>Apellido</th>
+                <th>Especialidad</th>
+                <th>ID Hospital</th>
+                <th>Salario</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        var url = "https://apicruddoctoresxml.azurewebsites.net/";
+        $(document).ready(function(){
+            loadDoctores();
+            $("#insertbutton").click(insertDoctor);
+            $("#updatebutton").click(updateDoctor);
+            $("#deletebutton").click(deleteDoctor);
+
+        })
+
+        function deleteDoctor(){
+            let idDoctor = $("#cajaiddoctor").val();
+            let request = `api/doctores/${idDoctor}`;
+            $.ajax({
+                url: url + request,
+                type: "DELETE",
+                success: function(){
+                    alert(`Se ha eliminado correctamente al doctor con ID: ${idDoctor}`)
+                    loadDoctores();
+                }
+            })
+        }
+
+        function updateDoctor(){
+            let idDoctor = $("#cajaiddoctor").val();
+            let apellido = $("#cajaapellido").val();
+            let especialidad = $("#cajaespecialidad").val();
+            let idHospital = $("#cajaidhospital").val();
+            let salario = $("#cajasalario").val();
+            let request = "api/doctores";
+            let dataXML = getDataXML(idDoctor, apellido, especialidad, idHospital, salario)
+            
+            $.ajax({
+                url: url + request,
+                type: "PUT", 
+                contentType: "text/xml",
+                data: dataXML,
+                success: function(){
+                    alert(`Se ha modificado correctamente al Dr. ${apellido}`)
+                    loadDoctores();
+                }
+            })
+        }
+
+        function insertDoctor(){
+            let idDoctor = $("#cajaiddoctor").val();
+            let apellido = $("#cajaapellido").val();
+            let especialidad = $("#cajaespecialidad").val();
+            let idHospital = $("#cajaidhospital").val();
+            let salario = $("#cajasalario").val();
+            let request = "api/doctores";
+            let dataXML = getDataXML(idDoctor, apellido, especialidad, idHospital, salario);
+            $.ajax({
+                url: url + request,
+                type: "POST",
+                contentType: "text/xml",
+                data: dataXML,
+                success: function(){
+                    alert(`Se ha creado correctamente al Dr. ${apellido}`)
+                    loadDoctores();
+                }
+            })
+        }
+
+        function getDataXML(idDoctor, apellido, especialidad, idHospital, salario){
+            let dataXML = `<Doctor>
+                                <Apellido>${apellido}</Apellido>
+                                <Especialidad>${especialidad}</Especialidad>
+                                <IdDoctor>${idDoctor}</IdDoctor>
+                                <IdHospital>${idHospital}</IdHospital>
+                                <Salario>${salario}</Salario>
+                            </Doctor>`;
+            return dataXML;
+        }
+
+        function loadDoctores(){
+            let request = "api/doctores";
+            $.get(url + request, function(data){
+                let html = "";
+                $(data).find("Doctor").each(function(){
+                    let id = $(this).find("IdDoctor").text();
+                    let apellido = $(this).find("Apellido").text();
+                    let especialidad = $(this).find("Especialidad").text();
+                    let idHospital = $(this).find("IdHospital").text();
+                    let salario = $(this).find("Salario").text();
+
+                    html += "<tr><td>"+id+"</td><td>"+apellido+"</td><td>"+especialidad+"</td><td>"+idHospital+"</td><td>"+salario+"</td></tr>"
+                    $("#tabladoctores tbody").html(html)
+                })
+            })
+        }
+
+    </script>
+</body>
+</html>

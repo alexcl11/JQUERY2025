@@ -37,19 +37,20 @@
           var IdDepartamento = $("#cajaid").val();
           var nombreDepartamento = $("#cajanombre").val();
           var localidadDepartamento = $("#cajalocalidad").val();
+          insertDepartamento(url, IdDepartamento, nombreDepartamento, localidadDepartamento);
           //NECESITAMOS GENERAR UN STRING CON LA MISMA ESTRUCTURA QUE EL DOCUMENTO XML PARA SUS REGISTROS
-          var dataXML = getDepartamenoXML(IdDepartamento, nombreDepartamento, localidadDepartamento);
-          var request = "api/departamentos";
-          $.ajax({
-            url: url + request,
-            type: "POST",
-            contentType: "text/xml",
-            data: dataXML,
-            success: function(){
-                console.log("Insertado");
-                loadDepartamentos();
-            }
-          }) 
+        //   var dataXML = getDepartamenoXML(IdDepartamento, nombreDepartamento, localidadDepartamento);
+        //   var request = "api/departamentos";
+        //   $.ajax({
+        //     url: url + request,
+        //     type: "POST",
+        //     contentType: "text/xml",
+        //     data: dataXML,
+        //     success: function(){
+        //         console.log("Insertado");
+        //         loadDepartamentos();
+        //     }
+        //   }) 
         });
 
         $("#botonupdate").click(function(){
@@ -85,6 +86,21 @@
         })
 
       });
+
+      function insertDepartamento(url, id, nombre, localidad){
+        var dataXML = getDepartamenoXML(id, nombre, localidad);
+        var request = "api/departamentos";
+        $.ajax({
+        url: url + request,
+        type: "POST",
+        contentType: "text/xml",
+        data: dataXML,
+        success: function(){
+            console.log("Insertado");
+            loadDepartamentos();
+        }
+        }) 
+      }
 
       function getDepartamenoXML(id, nombre, localidad){
         //COPIAMOS EL CÓDIGO DE GENERACIÓN DEL OBJETO XML
