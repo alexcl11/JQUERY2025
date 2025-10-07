@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web 23 CRUD Departamentos JSON</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6fa;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-top: 30px;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #3498db;
+            margin: 20px 0;
+        }
+        label {
+            margin-right: 8px;
+            color: #34495e;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            padding: 6px 10px;
+            margin: 8px 8px 8px 0;
+            border: 1px solid #bfc9d1;
+            border-radius: 4px;
+            background: #fff;
+            font-size: 15px;
+        }
+        button {
+            padding: 8px 18px;
+            margin: 8px 6px 8px 0;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #217dbb;
+        }
+        table {
+            width: 90%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+        }
+        th, td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e1e7ed;
+            text-align: left;
+        }
+        th {
+            background: #3498db;
+            color: #fff;
+            font-weight: bold;
+        }
+        tr:hover {
+            background: #f0f6fb;
+        }
+    </style>
+</head>
+<body>
+    <h1>CRUD Departamentos JSON</h1>
+    <label>Número departamento: </label>
+    <input type="text" id="cajanumero">
+    <label>Nombre departamento: </label>
+    <input type="text" id="cajanombre">
+    <label>Localidad departamento: </label>
+    <input type="text" id="cajalocalidad">
+
+    <br><br>
+
+    <button id="insertbutton">Insertar</button>
+    <button id="updatebutton">Modificar</button>
+    <button id="deletebutton">Eliminar</button>
+
+    <hr>
+
+    <table id="tabladepartamentos" border="1">
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Nombre</th>
+                <th>Localidad</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        var url = "https://apicruddepartamentoscore.azurewebsites.net/";
+        $(document).ready(function(){
+            loadDepartamentos();
+            $("#insertbutton").click(insertDepartamento)
+            $("#updatebutton").click(updateDepartamento)
+            $("#deletebutton").click(deleteDepartamento)
+        })
+
+        function deleteDepartamento(){
+            var num = $("#cajanumero").val();
+            var request = `api/departamentos/${num}`;
+            $.ajax({
+                url: url + request,
+                type: "DELETE",
+                success: function(){
+                    alert(`Se ha eliminado correctamente el departamento con número: ${num}`)
+                    loadDepartamentos();
+                }
+            })
+        }
+
+        function updateDepartamento(){
+            var num = parseInt($("#cajanumero").val());
+            var nombre = $("#cajanombre").val();
+            var localidad = $("#cajalocalidad").val();
+            var request = "api/departamentos";
+            var dataJSON = getDepartamentoJSON(num, nombre, localidad);
+            $.ajax({
+                url: url + request,
+                type: "PUT",
+                contentType: "application/json",
+                data: dataJSON,
+                success: function(){
+                    alert(`Se ha modificado correctamente el departamento: ${nombre}`)
+                    loadDepartamentos();
+                }
+            })
+
+        }
+
+
+        function insertDepartamento(){
+            var num = parseInt($("#cajanumero").val());
+            var nombre = $("#cajanombre").val();
+            var localidad = $("#cajalocalidad").val();
+            var request = "api/departamentos";
+            var dataJSON = getDepartamentoJSON(num, nombre, localidad);
+            $.ajax({
+                url: url + request,
+                type: "POST",
+                contentType: "application/json",
+                data: dataJSON,
+                success: function(){
+                    alert(`Se ha creado correctamente el departamento: ${nombre}`);
+                    loadDepartamentos();
+                }
+            })
+
+        }
+
+        function getDepartamentoJSON(num, nombre, localidad){
+            var departamento = {"numero":num, "nombre":nombre, "localidad":localidad};
+            var dataJSON = JSON.stringify(departamento);
+            return dataJSON;
+        }
+        
+        function loadDepartamentos(){
+            var request = "api/Departamentos";
+            $.getJSON(url + request, function(data){
+                var html = "";
+                $.each(data, function(index, departamento){
+                    var num = departamento.numero;
+                    var nombre = departamento.nombre;
+                    var localidad = departamento.localidad;
+                    html += `<tr><td>${num}</td><td>${nombre}</td><td>${localidad}</td></tr>`
+                })
+                $("#tabladepartamentos tbody").html(html)
+            })
+        }
+    </script>
+</body>
+</html>
