@@ -21,25 +21,22 @@
             $("#listadepartamentos").html("");
             var request = "/webresources/departamentos";
             $.getJSON(url+request, function(data){
-                console.log(data)
                 var html = "";
                 $.each(data, function(index, departamento){
                     var id = departamento.numero;
                     var nombre = departamento.nombre;
-                    var lidepartamento = $("<li>", {"text":nombre});
+                    var lidepartamento = $("<li>", {"text":`${id} - ${nombre} `});
                     var deleteButton = $("<button>", {"text":"Eliminar","value":id})   
                     lidepartamento.append(deleteButton)
                     $("#listadepartamentos").append(lidepartamento)
 
                     deleteButton.click(function(){
-                        var indexBoton = $(this).val();
-                        console.log(indexBoton)
+                        var indexBoton = $(this).val();                        
                         var requestDelete = `/webresources/departamentos/delete/${indexBoton}`;
                         $.ajax({
                             url:url+requestDelete,
                             type: "DELETE",
                             success: function(){
-                                consol.log("Eliminado")
                                 loadDepartamentos();
                             }
                         })
